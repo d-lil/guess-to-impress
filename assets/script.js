@@ -4,25 +4,22 @@ let questions = [
       question: "Scott Pilgrim is the _________ of the earth.",
       choices: ["1. Salt", "2. Scum", "3. King", "4. OR is he both the salt AND the scum"],
       answer: "4. OR is he both the salt AND the scum"
-  },
-  {
+  },  {
       question: "________ mosquitos are the only ones that suck blood.",
       choices: ["1. Male", "2. Female", "3. Priority mail", "4. Goth"],
       answer: "2. Female"
-  },
-  {
+  },  {
       question: "_____ _______'s skin sparkles like diamonds.",
       choices: ["1. Hello Kitty", "2. Bill Clinton", "3. Edward Cullen", "4. Tony Soprano",],
       answer: "3. Edward Cullen"
-  },
-  {
+  },  {
       question: "Lost in __________.",
       choices: ["1. Elation", "2. Translation", "3. Menstruation", "4. Caucasian"],
       answer: "2. Translation"
   }
 ];
 
-var timer = document.getElementById("timer");
+var timer = document.getElementById("clock");
 var timeLeft = document.getElementById("timeLeft");
 var timesUp = document.getElementById("timesUp");
 
@@ -38,21 +35,21 @@ var choice4 = document.getElementById("btn3");
 var answerCheck = document.getElementById("answerCheck");
 
 var summary = document.getElementById("summary");
-var submitInitialBtn = document.getElementById("submitInitialBtn");
-var initialInput = document.getElementById("initialInput");
+var submitBtn = document.getElementById("submitBtn");
+var initialsIn = document.getElementById("initialsIn");
 var bigDiv = document.getElementById("bigDiv");
 
-var highScoreSection = document.getElementById("highScoreSection");
-var finalScore = document.getElementById("finalScore");
+var hsDiv = document.getElementById("hsDiv");
+var score = document.getElementById("score");
 
-var goBackBtn = document.getElementById("goBackBtn");
-var clearHighScoreBtn = document.getElementById("clearHighScoreBtn"); 
+var backBtn = document.getElementById("backBtn");
+var clearBtn = document.getElementById("clearBtn"); 
 var viewHighscore = document.getElementById("viewHighscore");
 var listHighscores = document.getElementById("listHighscores");
 
-var correctAns = 0;
+var rightAns = 0;
 var questionNum = 0;
-var scoreResult;
+var scoreResult = 0;
 var questionIndex = 0;
 
 
@@ -63,7 +60,8 @@ function newQuiz() {
   questionIndex = 0;
   totalTime = 40;
   timeLeft.textContent = totalTime;
-  initialInput.textContent = "";
+  initialsIn.textContent = "";
+  rightAns = 0;
 
   startDiv.style.display = "none";
   questionDiv.style.display = "block";
@@ -107,7 +105,7 @@ function checkAnswer(answer) {
   answerCheck.style.display = "block";
 
   if (questions[questionIndex].answer === questions[questionIndex].choices[answer]) {
-      correctAns++;
+      rightAns++;
       answerCheck.textContent = "You got it";
   } else {
       totalTime -= 10;
@@ -133,87 +131,87 @@ function gameOver() {
   questionDiv.style.display = "none";
   startDiv.style.display = "none";
   timesUp.style.display = "block";
+  console.log(rightAns);
+  score.innerHTML= rightAns;
+};
 
-  finalScore.textContent = correctAns;
-}
 
-submitInitialBtn.addEventListener("click", function(event){ 
-  storeHighScores(event);
-});
+function showScores() {
+    listHighscores.innerHTML = "";
+    startDiv.style.display = "none";
+    timer.style.display = "none";
+    questionDiv.style.display = "none";
+    timesUp.style.display = "none";
+    summary.style.display = "none";
+    hsDiv.style.display = "block";
+   
+    var savedScores = localStorage.getItem("highscores");
+   
+    
+    if (savedScores === "") {
+        return;
+    }
+        
+    var storedHighScores = JSON.parse(savedScores);
+    var newHighscore = [];
+    for (let i = 0; i < storedHighScores.length; i++) {
+        var newHighscore = document.createElement("p");
+        newHighscore.innerHTML = storedHighScores[i].initials + " : " + storedHighScores[i].score;
+        listHighscores.appendChild(newHighscore);
+    }
+  };
+  
+function storeHighScores() {
+    
+    if (initialsIn.value === "") {
+        alert("C'mon, you have to type something.");
+        return;
+    } 
+  
+    startDiv.style.display = "none";
+    timer.style.display = "none";
+    timesUp.style.display = "none";
+    summary.style.display = "none";
+    hsDiv.style.display = "block";   
+  
+    var savedScores = localStorage.getItem("highscores");
+    var scoresArray;
+  
+    if (savedScores === null) {
+        scoresArray = [];
+    } else {
+        scoresArray = JSON.parse(savedScores);
+    }
+  
+    var userScore = {
+        initials: initialsIn.value,
+        score: rightAns
+    };
+  
+    scoresArray.push(userScore);
+    initialsIn.value = "";
+    
+    var scoresArrayString = JSON.stringify(scoresArray);
+    window.localStorage.setItem("highscores", scoresArrayString);
 
-function storeHighScores(event) {
-  event.preventDefault();
-
-  if (initialInput.value === "") {
-      alert("C'mon, you have to type something.");
-      return;
-  } 
-
-  startDiv.style.display = "none";
- // timer.style.display = "none";
-  timesUp.style.display = "none";
-  summary.style.display = "none";
-  highScoreSection.style.display = "block";   
-
-  var savedHighScores = localStorage.getItem("theHighscores");
-  var scoresArray;
-
-  if (savedHighScores === null) {
-      scoresArray = [];
-  } else {
-      scoresArray = JSON.parse(savedHighScores)
-  }
-
-  var userScore = {
-      initials: initialInput.value,
-      score: finalScore.textContent
+    showScores();
+    
   };
 
-  console.log(userScore);
-  scoresArray.push(userScore);
-
-  var scoresArrayString = JSON.stringify(scoresArray);
-  window.localStorage.setItem("theHighscores", scoresArrayString);
-  
-  showHighScores();
-}
-
-function showHighScores() {
-
-  startDiv.style.display = "none";
-  //timer.style.display = "none";
-  questionDiv.style.display = "none";
-  timesUp.style.display = "none";
-  summary.style.display = "none";
-  highScoreSection.style.display = "block";
-
-  var savedHighScores = localStorage.getItem("theHighscores");
-
-  if (savedHighScores === null) {
-      return;
-  }
-  console.log(savedHighScores);
-
-  var storedHighScores = JSON.parse(savedHighScores);
-
-  for (let i = 0; i < eachNewHighScore.length; i++) {
-      var eachNewHighScore = document.createElement("p");
-      eachNewHighScore.innerHTML = storedHighScores[i].initials + " : " + storedHighScores[i].score;
-      listHighscores.appendChild(eachNewHighScore);
-  }
-}
-
+submitBtn.addEventListener("click", function(){ 
+  storeHighScores();
+});
 viewHighscore.addEventListener("click", function(event) { 
-  showHighScores(event);
+  showScores(event);
 });
 
-goBackBtn.addEventListener("click", function() {
+backBtn.addEventListener("click", function() {
   startDiv.style.display = "block";
-  highScoreSection.style.display = "none";
+  hsDiv.style.display = "none";
 });
 
-clearHighScoreBtn.addEventListener("click", function(){
-  window.localStorage.removeItem("theHighscores");
-  listHighscores.innerHTML = "theHighscores Cleared!";
+clearBtn.addEventListener("click", function(){
+  window.localStorage.removeItem("highscores");
+  listHighscores.innerHTML = "Highscores Deleted";
   listHighscores.setAttribute("style", "font-weight: bold")
 });
