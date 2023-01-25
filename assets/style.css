@@ -40,8 +40,17 @@ a:hover {
   text-align: center;
 }
 
+.questionDiv {
+  justify-content: left;
+}
+
+#questionTitle {
+  text-align: center;
+}
+
 .answerBtn {
   font-size: 3px;
+  
 }
 
 .btn {
@@ -55,6 +64,7 @@ a:hover {
 .btn:hover {
   background-color:#a166d8;
 }
+
 
 #answerCheck {
   font-size: 12px;
