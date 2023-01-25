@@ -63,6 +63,7 @@ a:hover {
 
 .btn:hover {
   background-color:#a166d8;
+  cursor: pointer;
 }
 
 
